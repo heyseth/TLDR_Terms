@@ -1,3 +1,5 @@
+let mdConverter = new showdown.Converter();
+
 class TermsDetector {
     // Weighted scores for different detection methods - adjusted weights
     static DETECTION_WEIGHTS = {
@@ -292,6 +294,7 @@ class TermsDetector {
 class ButtonInserter {
     constructor() {
         this.button = this.createButton();
+        this.popup = this.createPopup();
         this.inserted = false;
     }
 
@@ -299,8 +302,34 @@ class ButtonInserter {
         const button = document.createElement('button');
         button.textContent = '✨ Understand Terms of Service';
         button.className = 'tos-copy-button tos-fixed-position';
-        button.addEventListener('click', () => this.copyTermsToClipboard());
+        button.addEventListener('click', () => this.analyzeTOS());
         return button;
+    }
+
+    createPopup() {
+        const popup = document.createElement('div');
+        popup.className = 'tos-popup';
+        popup.innerHTML = `
+            <div class="tos-popup-content">
+                <button class="tos-popup-close">×</button>
+                <h2>Terms of Service Summary</h2>
+                <div class="tos-popup-body"></div>
+            </div>
+        `;
+        
+        // Close button functionality
+        popup.querySelector('.tos-popup-close').addEventListener('click', () => {
+            popup.classList.remove('active');
+        });
+        
+        // Click outside to close
+        popup.addEventListener('click', (e) => {
+            if (e.target === popup) {
+                popup.classList.remove('active');
+            }
+        });
+        
+        return popup;
     }
 
     insert() {
@@ -317,6 +346,7 @@ class ButtonInserter {
         
         // Insert at root level to avoid React conflicts
         document.body.appendChild(container);
+        document.body.appendChild(this.popup);
         this.inserted = true;
 
         // Setup mutation observer to ensure button stays on page
@@ -328,6 +358,9 @@ class ButtonInserter {
             if (!document.contains(container)) {
                 document.body.appendChild(container);
             }
+            if (!document.contains(this.popup)) {
+                document.body.appendChild(this.popup);
+            }
         });
 
         observer.observe(document.body, {
@@ -336,15 +369,15 @@ class ButtonInserter {
         });
     }
 
-    async copyTermsToClipboard() {
+    async analyzeTOS() {
         try {
             const content = this.extractTermsContent();
-            this.sendTermsToServer(content);
-
             this.showFeedback('success', 'Analyzing...');
+            //this.displaySummary();
+            await this.sendTermsToServer(content);
         } catch (error) {
             console.error('Failed to copy:', error);
-            this.showFeedback('error', 'Failed to copy');
+            this.showFeedback('error', 'Failed to analyze');
         }
     }
 
@@ -357,8 +390,7 @@ class ButtonInserter {
     Privacy & Data Usage: How data is collected and used.
     Liabilities & Disclaimers: Key limitations and warranties.
     Dispute Resolution: Methods for resolving conflicts.
-    The summary should have 3 concise bullet points for each section above, using simple language and avoiding legal jargon.`
-    ;
+    The summary should have 3 concise bullet points for each section above, using simple language and avoiding legal jargon.`;
 
     async sendTermsToServer(content) {
         const GEMINI_API_KEY = 'AIzaSyAFgQsNt9APZ7UKrBikOmap8LEPiY1P9F4'; // FIXME:
@@ -383,20 +415,16 @@ class ButtonInserter {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            // Get the reader from the response body stream
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             let buffer = '';
 
-            // Read the stream
             while (true) {
                 const {value, done} = await reader.read();
                 if (done) break;
                 
-                // Decode the chunk and add it to our buffer
                 buffer += decoder.decode(value, {stream: true});
                 
-                // Try to extract complete JSON objects
                 let curlyBraceCount = 0;
                 let startIndex = 0;
                 
@@ -404,24 +432,20 @@ class ButtonInserter {
                     if (buffer[i] === '{') curlyBraceCount++;
                     if (buffer[i] === '}') curlyBraceCount--;
                     
-                    // We found a complete JSON object
                     if (curlyBraceCount === 0 && startIndex < i) {
                         try {
                             const jsonStr = buffer.substring(startIndex, i + 1);
                             const data = JSON.parse(jsonStr);
                             
-                            // Log the response text if it exists
                             if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
-                                console.log(data.candidates[0].content.parts[0].text);
-
+                                const summaryText = data.candidates[0].content.parts[0].text;
+                                this.displaySummary(summaryText);
                             }
                             
-                            // Remove the processed part from the buffer
                             buffer = buffer.substring(i + 1);
                             startIndex = 0;
                             i = 0;
                         } catch (e) {
-                            // If we can't parse the JSON, continue accumulating more data
                             continue;
                         }
                     }
@@ -431,6 +455,25 @@ class ButtonInserter {
             console.error('Failed to send to server:', error);
             throw error;
         }
+    }
+
+    test = `Here's a plain language summary of the YouTube Terms of Service:<br><br>**Concerning Elements:**<br><br>*   **Content Removal:** YouTube can remove your content if it violates the rules or could harm YouTube, its users, or others. They may not always tell you why beforehand.<br>*   **Account Termination:** YouTube can suspend or terminate your account if you break the rules, if required by law, or if your actions could harm others.<br>*   **Liability Limitations:** YouTube isn't responsible for many things, including lost profits, data loss, or damages resulting from your use of the service.<br><br>**Purpose & Scope:**<br><br>*   **What YouTube Is:** YouTube is a platform for watching, sharing videos, and connecting with others.<br>*   **Agreement:** These terms, along with the Community Guidelines and other policies, form an agreement between you and YouTube.<br>*   **Who It Applies To:** These terms apply to anyone who uses YouTube. There are specific rules for users under 18.<br><br>**User Obligations:**<br><br>*   **Age and Authority:** You must be at least 13 (or have parental permission). If using YouTube for a business, you must have the authority to represent it.<br>*   **Respectful Use:** You must follow the rules and laws when using YouTube and uploading content. You're responsible for the content you upload.<br>*   **Restrictions:** You cannot copy, sell, or misuse any part of YouTube or its content without permission. You also can't manipulate engagement metrics.<br><br>**Privacy & Data Usage:**<br><br>*   **Privacy Policy:** Your personal data is handled as described in YouTube's Privacy Policy.<br>*   **Content Processing:** YouTube processes your uploaded audio and video content.<br>*   **YouTube Kids:** There's a special privacy notice for YouTube Kids.<br><br>**Liabilities & Disclaimers:**<br><br>*   **"As Is" Service:** YouTube provides the service "as is" without guarantees about its content, features, or reliability.<br>*   **Limited Liability:** YouTube isn't liable for lost profits, data, or indirect damages. Their liability is limited to what they've paid you in the last year (or $500, whichever is greater).<br>*   **Indemnity:** You agree to protect YouTube from claims related to your use of the service, your content, or your violation of the terms.<br><br>**Dispute Resolution:**<br><br>*   **Governing Law:** California law governs any disputes.<br>*   **Court Location:** Disputes will be resolved in Santa Clara County, California courts.<br>*   **Time Limit:** You must start any legal action within one year of the issue arising.<br>`
+
+    displaySummary(text) {
+        let formattedText = text;
+        // remove all text before the first * symbol
+        const startIndex = formattedText.indexOf('\*');
+        if (startIndex > 0) {
+            formattedText = formattedText.substring(startIndex);
+        }
+        // convert markdown to html
+        formattedText = mdConverter.makeHtml(formattedText);
+        // replace all * in formattedText with &#x2022;
+        formattedText = formattedText.replace(/\*/g, '&#x2022;');
+
+        this.popup.querySelector('.tos-popup-body').innerHTML = formattedText;
+        this.popup.classList.add('active');
+        this.showFeedback('success', '✨ Summary Ready');
     }
 
     extractTermsContent() {

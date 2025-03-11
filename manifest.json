@@ -10,7 +10,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "js": ["showdown.min.js", "content.js"],
       "css": ["styles.css"]
     }
   ]

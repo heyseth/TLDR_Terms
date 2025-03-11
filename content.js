@@ -349,9 +349,22 @@ class ButtonInserter {
         }
     }
 
+    metaprompt = 
+    `You are an assistant that summarizes Terms and Conditions into plain language. Read the provided text and extract its key points, including:
+
+    Concerning elements: anything which the user may find concerning
+    Purpose & Scope: What the document covers.
+    User Obligations: Responsibilities and limitations.
+    Privacy & Data Usage: How data is collected and used.
+    Liabilities & Disclaimers: Key limitations and warranties.
+    Dispute Resolution: Methods for resolving conflicts.
+    Present the summary in concise bullet points or a brief paragraph, using simple language and avoiding legal jargon. End with a disclaimer that the summary is for informational purposes only and not legal advice.
+
+    Present a second, even shorter summary, with just 3 short bullet points per section.`
+    ;
+
     async sendTermsToServer(content) {
-        console.log("test");
-        const GEMINI_API_KEY = 'AIzaSyAFgQsNt9APZ7UKrBikOmap8LEPiY1P9F4'; // Replace with actual API key
+        const GEMINI_API_KEY = 'AIzaSyAFgQsNt9APZ7UKrBikOmap8LEPiY1P9F4'; // FIXME:
         const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
         
         try {
@@ -363,7 +376,7 @@ class ButtonInserter {
                 body: JSON.stringify({
                     contents: [{
                         parts: [{
-                            text: content
+                            text: this.metaprompt + content
                         }]
                     }]
                 })

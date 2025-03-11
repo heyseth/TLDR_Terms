@@ -117,10 +117,10 @@ class TermsDetector {
             header: `${this.scores.header} (${this.scores.header ? 'Match' : 'No match'})`,
             content: `${this.scores.content} (${this.scores.content ? 'Match' : 'No match'})`,
             keyword: `${this.scores.keyword} (${this.scores.keyword ? 'Match' : 'No match'})`,
-            total: `${this.score.toFixed(2)} (Threshold: 0.6)`
+            total: `${this.score.toFixed(2)} (Threshold: 0.4)`
         });
 
-        return this.score >= 0.6;
+        return this.score >= 0.4;
     }
 
     isSearchResultsPage() {
@@ -339,10 +339,9 @@ class ButtonInserter {
     async copyTermsToClipboard() {
         try {
             const content = this.extractTermsContent();
-            //console.log('Terms of Service:', content);
             this.sendTermsToServer(content);
 
-            this.showFeedback('success', 'Copied to clipboard!');
+            this.showFeedback('success', 'Analyzing...');
         } catch (error) {
             console.error('Failed to copy:', error);
             this.showFeedback('error', 'Failed to copy');
@@ -358,9 +357,7 @@ class ButtonInserter {
     Privacy & Data Usage: How data is collected and used.
     Liabilities & Disclaimers: Key limitations and warranties.
     Dispute Resolution: Methods for resolving conflicts.
-    Present the summary in concise bullet points or a brief paragraph, using simple language and avoiding legal jargon. End with a disclaimer that the summary is for informational purposes only and not legal advice.
-
-    Present a second, even shorter summary, with just 3 short bullet points per section.`
+    The summary should have 3 concise bullet points for each section above, using simple language and avoiding legal jargon.`
     ;
 
     async sendTermsToServer(content) {
@@ -386,8 +383,50 @@ class ButtonInserter {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data = await response.json();
-            console.log('Server response:', data);
+            // Get the reader from the response body stream
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+
+            // Read the stream
+            while (true) {
+                const {value, done} = await reader.read();
+                if (done) break;
+                
+                // Decode the chunk and add it to our buffer
+                buffer += decoder.decode(value, {stream: true});
+                
+                // Try to extract complete JSON objects
+                let curlyBraceCount = 0;
+                let startIndex = 0;
+                
+                for (let i = 0; i < buffer.length; i++) {
+                    if (buffer[i] === '{') curlyBraceCount++;
+                    if (buffer[i] === '}') curlyBraceCount--;
+                    
+                    // We found a complete JSON object
+                    if (curlyBraceCount === 0 && startIndex < i) {
+                        try {
+                            const jsonStr = buffer.substring(startIndex, i + 1);
+                            const data = JSON.parse(jsonStr);
+                            
+                            // Log the response text if it exists
+                            if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+                                console.log(data.candidates[0].content.parts[0].text);
+
+                            }
+                            
+                            // Remove the processed part from the buffer
+                            buffer = buffer.substring(i + 1);
+                            startIndex = 0;
+                            i = 0;
+                        } catch (e) {
+                            // If we can't parse the JSON, continue accumulating more data
+                            continue;
+                        }
+                    }
+                }
+            }
         } catch (error) {
             console.error('Failed to send to server:', error);
             throw error;

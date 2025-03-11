@@ -457,8 +457,6 @@ class ButtonInserter {
         }
     }
 
-    test = `Here's a plain language summary of the YouTube Terms of Service:<br><br>**Concerning Elements:**<br><br>*   **Content Removal:** YouTube can remove your content if it violates the rules or could harm YouTube, its users, or others. They may not always tell you why beforehand.<br>*   **Account Termination:** YouTube can suspend or terminate your account if you break the rules, if required by law, or if your actions could harm others.<br>*   **Liability Limitations:** YouTube isn't responsible for many things, including lost profits, data loss, or damages resulting from your use of the service.<br><br>**Purpose & Scope:**<br><br>*   **What YouTube Is:** YouTube is a platform for watching, sharing videos, and connecting with others.<br>*   **Agreement:** These terms, along with the Community Guidelines and other policies, form an agreement between you and YouTube.<br>*   **Who It Applies To:** These terms apply to anyone who uses YouTube. There are specific rules for users under 18.<br><br>**User Obligations:**<br><br>*   **Age and Authority:** You must be at least 13 (or have parental permission). If using YouTube for a business, you must have the authority to represent it.<br>*   **Respectful Use:** You must follow the rules and laws when using YouTube and uploading content. You're responsible for the content you upload.<br>*   **Restrictions:** You cannot copy, sell, or misuse any part of YouTube or its content without permission. You also can't manipulate engagement metrics.<br><br>**Privacy & Data Usage:**<br><br>*   **Privacy Policy:** Your personal data is handled as described in YouTube's Privacy Policy.<br>*   **Content Processing:** YouTube processes your uploaded audio and video content.<br>*   **YouTube Kids:** There's a special privacy notice for YouTube Kids.<br><br>**Liabilities & Disclaimers:**<br><br>*   **"As Is" Service:** YouTube provides the service "as is" without guarantees about its content, features, or reliability.<br>*   **Limited Liability:** YouTube isn't liable for lost profits, data, or indirect damages. Their liability is limited to what they've paid you in the last year (or $500, whichever is greater).<br>*   **Indemnity:** You agree to protect YouTube from claims related to your use of the service, your content, or your violation of the terms.<br><br>**Dispute Resolution:**<br><br>*   **Governing Law:** California law governs any disputes.<br>*   **Court Location:** Disputes will be resolved in Santa Clara County, California courts.<br>*   **Time Limit:** You must start any legal action within one year of the issue arising.<br>`
-
     displaySummary(text) {
         let formattedText = text;
         // remove all text before the first * symbol
@@ -558,14 +556,8 @@ class ButtonInserter {
     }
 
     showFeedback(type, message) {
-        const originalText = this.button.textContent;
         this.button.textContent = message;
         this.button.classList.add(type);
-
-        setTimeout(() => {
-            this.button.textContent = originalText;
-            this.button.classList.remove(type);
-        }, 2000);
     }
 }
 

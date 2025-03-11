@@ -1,5 +1,5 @@
 .tos-copy-button {
-    background-color: #4CAF50;
+    background-color: #663399;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -18,7 +18,7 @@
 }
 
 .tos-copy-button:hover {
-    background-color: #45a049;
+    background-color: #4d2673;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
@@ -79,6 +79,36 @@
     position: relative;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
     overflow-y: auto;
+    /* Added normalizing properties */
+    box-sizing: border-box;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    text-align: left;
+    font-weight: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* all ul elements within tos-popup-content */
+.tos-popup-content ul {
+    list-style-type: none;
+    list-style-position: inside;
+}
+
+.tos-popup-content p {
+    margin: 1em 0;
+}
+
+.tos-popup-content li {
+    line-height: 1.5;
+    margin: 0;
+}
+
+.tos-popup-content b,
+.tos-popup-content strong {
+    font-weight: 500;
 }
 
 .tos-popup-close {
@@ -103,7 +133,8 @@
     margin: 0 0 20px 0;
     color: #333;
     font-size: 24px;
-    font-weight: 600;
+    font-weight: bolder;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
 .tos-popup-body {
@@ -116,4 +147,31 @@
     margin-bottom: 8px;
     display: block;
     content: "";
+}
+
+/* Added outline for first section wrapper */
+.tos-popup-initial-content {
+    position: relative;
+    padding: 10px;
+    margin: -10px;
+    border: 2px solid red;
+    border-radius: 20px;
+}
+
+.tos-popup-initial-content > p,
+.tos-popup-initial-content > ul {
+    margin: 0;
+}
+
+.tos-popup-initial-content > ul {
+    margin-top: 10px;
+}
+
+/* Concerning Elements */
+.tos-popup-initial-content > p {
+    color: red;
+}
+
+.tos-popup-initial-content > p > strong {
+    font-weight: 750;
 }

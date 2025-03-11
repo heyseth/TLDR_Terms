@@ -384,7 +384,7 @@ class ButtonInserter {
     metaprompt = 
     `You are an assistant that summarizes Terms and Conditions into plain language. Read the provided text and extract its key points, including:
 
-    Concerning elements: anything which the user may find concerning
+    Concerning Elements: anything which the user may find concerning
     Purpose & Scope: What the document covers.
     User Obligations: Responsibilities and limitations.
     Privacy & Data Usage: How data is collected and used.
@@ -469,9 +469,32 @@ class ButtonInserter {
         // convert markdown to html
         formattedText = mdConverter.makeHtml(formattedText);
         // replace all * in formattedText with &#x2022;
-        formattedText = formattedText.replace(/\*/g, '&#x2022;');
+        formattedText = formattedText.replace(/\* /g, '');
 
-        this.popup.querySelector('.tos-popup-body').innerHTML = formattedText;
+        const popupBody = this.popup.querySelector('.tos-popup-body');
+        popupBody.innerHTML = formattedText;
+
+        // Find the first p and ul elements
+        const firstP = popupBody.querySelector('p');
+        const firstUl = popupBody.querySelector('ul');
+
+        if (firstP && firstUl) {
+            // Create a wrapper div
+            const wrapper = document.createElement('div');
+            wrapper.className = 'tos-popup-initial-content';
+
+            // Move the elements into the wrapper
+            const pClone = firstP.cloneNode(true);
+            const ulClone = firstUl.cloneNode(true);
+            wrapper.appendChild(pClone);
+            wrapper.appendChild(ulClone);
+
+            // Replace the original elements with the wrapper
+            firstP.parentNode.insertBefore(wrapper, firstP);
+            firstP.remove();
+            firstUl.remove();
+        }
+
         this.popup.classList.add('active');
         this.showFeedback('success', '✨ Summary Ready');
     }

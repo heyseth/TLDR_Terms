@@ -344,6 +344,7 @@ class ButtonInserter {
     async copyTermsToClipboard() {
         try {
             const content = this.extractTermsContent();
+            console.log('Terms of Service:', content);
             await navigator.clipboard.writeText(content);
             this.showFeedback('success', 'Copied to clipboard!');
         } catch (error) {
@@ -353,34 +354,61 @@ class ButtonInserter {
     }
 
     extractTermsContent() {
-        // Start from the header if found
-        const headers = Array.from(document.querySelectorAll('h1, h2'));
-        const tosHeader = headers.find(header => 
-            TermsDetector.KEYWORDS.some(keyword => 
-                header.textContent.toLowerCase().includes(keyword)
-            )
-        );
-
-        let content = '';
-        if (tosHeader) {
-            let element = tosHeader;
-            while (element && !this.isEndOfTerms(element)) {
-                content += element.textContent + '\n\n';
-                element = element.nextElementSibling;
+        const excludeTags = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'SVG', 'IMG', 'BR', 'HR']);
+        const MIN_TEXT_LENGTH = 1000;
+    
+        function isInHeaderFooter(element) {
+            let el = element;
+            while (el) {
+                const tag = el.tagName.toLowerCase();
+                const id = el.id.toLowerCase();
+                const cls = el.className.toLowerCase();
+                if (tag === 'header' || tag === 'footer' || 
+                    /(^|\\b)header(\\b|$)/.test(cls) || 
+                    /(^|\\b)footer(\\b|$)/.test(cls) ||
+                    id.includes('header') || id.includes('footer')) {
+                    return true;
+                }
+                el = el.parentElement;
             }
-        } else {
-            // Fallback to entire body content
-            content = document.body.textContent;
+            return false;
+        }
+    
+        function traverseDOM(el, depth = 0, candidates = []) {
+            if (excludeTags.has(el.tagName)) return candidates;
+            
+            const text = el.textContent.trim();
+            if (text.length >= MIN_TEXT_LENGTH) {
+                const score = text.length * (depth + 1); // Depth bonus
+                candidates.push({ el, text, score, depth });
+            }
+    
+            for (const child of el.children) {
+                traverseDOM(child, depth + 1, candidates);
+            }
+            return candidates;
+        }
+    
+        const candidates = traverseDOM(document.body)
+            .filter(c => !isInHeaderFooter(c.el))
+            .sort((a, b) => b.score - a.score);
+    
+        // Return the highest-scoring candidate that's not near the top
+        for (const candidate of candidates) {
+            if (candidate.depth > 2) { // Prefer deeper elements
+                return candidate.text;
+            }
         }
 
-        return content.trim();
-    }
-
-    isEndOfTerms(element) {
-        const text = element.textContent.toLowerCase();
-        return text.includes('privacy policy') || 
-               text.includes('copyright notice') ||
-               element.tagName === 'FOOTER';
+        if (candidates[0]?.text) {
+            // remove whitespace
+            candidates[0].text.replace(/\s+/g, ' ');
+            // remove line breaks
+            candidates[0].text.replace(/\n/g, ' ');
+        }
+        // remove extra whitespace from the text
+    
+        return candidates[0]?.text || 'No substantial content found';
     }
 
     showFeedback(type, message) {

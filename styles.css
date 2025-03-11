@@ -7,10 +7,8 @@
     cursor: pointer;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     font-size: 14px;
-    margin: 10px 0;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: relative;
     z-index: 2147483647;
 }
 
@@ -21,6 +19,8 @@
 
 .tos-copy-button:hover {
     background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .tos-copy-button:active {
@@ -36,8 +36,16 @@
 }
 
 .tos-fixed-position {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    margin: 0 !important;
+}
+
+#tos-button-container {
     position: fixed;
     bottom: 20px;
     right: 20px;
     z-index: 2147483647;
+    pointer-events: auto;
 }

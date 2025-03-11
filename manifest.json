@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Terms of Service Copier",
+  "name": "TLDR Terms",
   "version": "1.0",
-  "description": "Automatically detects Terms of Service pages and provides a button to copy them to clipboard",
+  "description": "Use AI to automatically summarize and understand terms of service.",
   "permissions": [
     "activeTab",
     "clipboardWrite"

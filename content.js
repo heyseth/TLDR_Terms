@@ -292,64 +292,92 @@ class TermsDetector {
 class ButtonInserter {
     constructor() {
         this.button = this.createButton();
+        this.inserted = false;
     }
 
     createButton() {
         const button = document.createElement('button');
-        button.textContent = 'Copy Terms of Service to Clipboard';
-        button.className = 'tos-copy-button';
+        button.textContent = '✨ Understand Terms of Service';
+        button.className = 'tos-copy-button tos-fixed-position';
         button.addEventListener('click', () => this.copyTermsToClipboard());
         return button;
     }
 
-    findInsertionPoint() {
-        // Look for headers containing terms of service keywords
-        const headers = Array.from(document.querySelectorAll('h1, h2'));
-        let tosHeader = headers.find(header => 
-            TermsDetector.KEYWORDS.some(keyword => 
-                header.textContent.toLowerCase().includes(keyword)
-            )
-        );
-
-        if (tosHeader) {
-            // Look for a date element after the header
-            let nextElement = tosHeader.nextElementSibling;
-            while (nextElement && this.isDateElement(nextElement)) {
-                tosHeader = nextElement;
-                nextElement = nextElement.nextElementSibling;
-            }
-            return tosHeader;
-        }
-
-        // Fallback to fixed position
-        this.button.classList.add('tos-fixed-position');
-        return document.body;
-    }
-
-    isDateElement(element) {
-        const text = element.textContent.toLowerCase();
-        return text.match(/\d{1,2}\/\d{1,2}\/\d{2,4}/) || 
-               text.match(/january|february|march|april|may|june|july|august|september|october|november|december/);
-    }
-
     insert() {
-        const insertionPoint = this.findInsertionPoint();
-        if (insertionPoint === document.body) {
-            document.body.appendChild(this.button);
-        } else {
-            insertionPoint.parentNode.insertBefore(this.button, insertionPoint.nextSibling);
-        }
+        if (this.inserted) return;
+        
+        // Create a container for the button that's always at the root level
+        const container = document.createElement('div');
+        container.id = 'tos-button-container';
+        container.style.position = 'fixed';
+        container.style.bottom = '20px';
+        container.style.right = '20px';
+        container.style.zIndex = '2147483647';
+        container.appendChild(this.button);
+        
+        // Insert at root level to avoid React conflicts
+        document.body.appendChild(container);
+        this.inserted = true;
+
+        // Setup mutation observer to ensure button stays on page
+        this.observeButtonRemoval(container);
+    }
+
+    observeButtonRemoval(container) {
+        const observer = new MutationObserver((mutations) => {
+            if (!document.contains(container)) {
+                document.body.appendChild(container);
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
     }
 
     async copyTermsToClipboard() {
         try {
             const content = this.extractTermsContent();
-            console.log('Terms of Service:', content);
-            await navigator.clipboard.writeText(content);
+            //console.log('Terms of Service:', content);
+            this.sendTermsToServer(content);
+
             this.showFeedback('success', 'Copied to clipboard!');
         } catch (error) {
             console.error('Failed to copy:', error);
             this.showFeedback('error', 'Failed to copy');
+        }
+    }
+
+    async sendTermsToServer(content) {
+        console.log("test");
+        const GEMINI_API_KEY = 'AIzaSyAFgQsNt9APZ7UKrBikOmap8LEPiY1P9F4'; // Replace with actual API key
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+        
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: content
+                        }]
+                    }]
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Server response:', data);
+        } catch (error) {
+            console.error('Failed to send to server:', error);
+            throw error;
         }
     }
 

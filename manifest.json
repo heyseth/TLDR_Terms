@@ -9,7 +9,7 @@
     "*://localhost:*/*"
   ],
   "background": {
-    "service_worker": "serviceWorker.js"
+    "service_worker": "./js/serviceWorker.js"
   },
   "side_panel": {
     "default_path": "sidepanel.html"
@@ -17,8 +17,8 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["fuzzySearch.js", "listSearchHandler.js", "showdown.min.js", "content.js"],
-      "css": ["styles.css"]
+      "js": ["./js/fuzzySearch.js", "./js/listSearchHandler.js", "./js/showdown.min.js", "./js/termsDetector.js", "./js/buttonInserter.js", "./js/main.js"],
+      "css": ["./css/styles.css"]
     }
   ]
 }

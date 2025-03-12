@@ -313,6 +313,8 @@ class ButtonInserter {
             <div class="tos-popup-content">
                 <button class="tos-popup-close">×</button>
                 <h2>Terms of Service Summary</h2>
+                <p id="disclaimer">This summary is for informational purposes only and is not legal advice. Please read the full Terms of Service for complete details.</p>
+                
                 <div class="tos-popup-body"></div>
             </div>
         `;
@@ -495,10 +497,12 @@ class ButtonInserter {
 
         this.popup.classList.add('active');
         this.showFeedback('success', 'View Summary');
-        document.getElementsByClassName("tos-copy-button")[0].click = function() {
-            console.log("test");
-            popup.classList.add('active');
-        }
+        // remove old event listener
+        this.button.removeEventListener('click', this.analyzeTOS);
+
+        this.button.addEventListener('click', () => {
+            this.popup.classList.add('active');
+        });
 
         addListItemSearchHandlers('.tos-popup-body');
     }

@@ -175,3 +175,8 @@
 .tos-popup-initial-content > p > strong {
     font-weight: 750;
 }
+
+#disclaimer {
+    font-size: 10px;
+    padding-bottom: 1em;
+}

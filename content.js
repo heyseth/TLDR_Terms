@@ -386,16 +386,16 @@ class ButtonInserter {
     metaprompt = 
     `You are an assistant that summarizes Terms and Conditions into plain language. Read the provided text and extract its key points, including:
 
-    Concerning Elements: anything which the user may find concerning
+    Concerning Elements: anything which the user may find concerning.
     Purpose & Scope: What the document covers.
     User Obligations: Responsibilities and limitations.
     Privacy & Data Usage: How data is collected and used.
     Liabilities & Disclaimers: Key limitations and warranties.
     Dispute Resolution: Methods for resolving conflicts.
-    The summary should have 3 concise bullet points for each section above, using simple language and avoiding legal jargon. Each bullet point must include a short sentence from the text that supports the claim. Place this sentence at the end of the bullet point between square brackets []`;
+    The summary should have 3 concise bullet points for each section above, using simple language and avoiding legal jargon. Each bullet point must end with a short sentence from the text that supports the claim. This sentence MUST match the text exactly. Put the sentence between square brackets []`;
 
     async sendTermsToServer(content) {
-        const GEMINI_API_KEY = 'AIzaSyAFgQsNt9APZ7UKrBikOmap8LEPiY1P9F4'; // FIXME:
+        const GEMINI_API_KEY = 'AIzaSyBvGvFV3BqFUutQSTayLDpqmy9Bf-MHhWE'; // FIXME:
         const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
         
         try {

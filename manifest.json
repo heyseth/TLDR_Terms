@@ -4,7 +4,8 @@
   "version": "1.0",
   "description": "Use AI to automatically summarize and understand terms of service.",
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "*://localhost:*/*"
   ],
   "content_scripts": [
     {

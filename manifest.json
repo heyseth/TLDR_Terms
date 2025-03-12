@@ -5,8 +5,15 @@
   "description": "Use AI to automatically summarize and understand terms of service.",
   "permissions": [
     "activeTab",
+    "sidePanel",
     "*://localhost:*/*"
   ],
+  "background": {
+    "service_worker": "serviceWorker.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

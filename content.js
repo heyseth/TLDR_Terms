@@ -104,7 +104,7 @@ class TermsDetector {
     detectTermsPage() {
         // First check if we're on a search engine results page
         if (this.isSearchResultsPage()) {
-            console.log('Page detected as search results page - skipping terms detection');
+            //console.log('Page detected as search results page - skipping terms detection');
             return false;
         }
 
@@ -114,13 +114,13 @@ class TermsDetector {
         this.checkKeywords();
 
         // Log detailed scoring information
-        console.log('Terms Detection Scores:', {
-            url: `${this.scores.url} (${this.scores.url ? 'Match' : 'No match'})`,
-            header: `${this.scores.header} (${this.scores.header ? 'Match' : 'No match'})`,
-            content: `${this.scores.content} (${this.scores.content ? 'Match' : 'No match'})`,
-            keyword: `${this.scores.keyword} (${this.scores.keyword ? 'Match' : 'No match'})`,
-            total: `${this.score.toFixed(2)} (Threshold: 0.4)`
-        });
+        // console.log('Terms Detection Scores:', {
+        //     url: `${this.scores.url} (${this.scores.url ? 'Match' : 'No match'})`,
+        //     header: `${this.scores.header} (${this.scores.header ? 'Match' : 'No match'})`,
+        //     content: `${this.scores.content} (${this.scores.content ? 'Match' : 'No match'})`,
+        //     keyword: `${this.scores.keyword} (${this.scores.keyword ? 'Match' : 'No match'})`,
+        //     total: `${this.score.toFixed(2)} (Threshold: 0.4)`
+        // });
 
         return this.score >= 0.4;
     }
@@ -167,7 +167,7 @@ class TermsDetector {
         if (urlMatch) {
             this.score += TermsDetector.DETECTION_WEIGHTS.URL_MATCH;
             this.scores.url = TermsDetector.DETECTION_WEIGHTS.URL_MATCH;
-            console.log('URL Match:', { url, patterns: urlPatterns.map(p => p.toString()) });
+            //console.log('URL Match:', { url, patterns: urlPatterns.map(p => p.toString()) });
         }
     }
 
@@ -190,7 +190,7 @@ class TermsDetector {
         if (foundKeyword) {
             this.score += TermsDetector.DETECTION_WEIGHTS.HEADER_MATCH;
             this.scores.header = TermsDetector.DETECTION_WEIGHTS.HEADER_MATCH;
-            console.log('Header Match:', { matchedHeader });
+            //console.log('Header Match:', { matchedHeader });
         }
     }
 
@@ -222,10 +222,10 @@ class TermsDetector {
         if (contentLength > 8000 && hasLegal) {
             this.score += TermsDetector.DETECTION_WEIGHTS.CONTENT_LENGTH;
             this.scores.content = TermsDetector.DETECTION_WEIGHTS.CONTENT_LENGTH;
-            console.log('Content Length Match:', { 
-                length: contentLength, 
-                hasLegalStructure: hasLegal 
-            });
+            // console.log('Content Length Match:', { 
+            //     length: contentLength, 
+            //     hasLegalStructure: hasLegal 
+            // });
         }
     }
 
@@ -249,10 +249,10 @@ class TermsDetector {
             }
         });
 
-        console.log('Legal Indicators:', { 
-            matched: matchedIndicators,
-            count: indicatorCount
-        });
+        // console.log('Legal Indicators:', { 
+        //     matched: matchedIndicators,
+        //     count: indicatorCount
+        // });
 
         return indicatorCount >= 3;
     }
@@ -282,11 +282,11 @@ class TermsDetector {
         if (keywordCount >= 3 && paragraphsWithKeywords >= 2) {
             this.score += TermsDetector.DETECTION_WEIGHTS.KEYWORD_MATCH;
             this.scores.keyword = TermsDetector.DETECTION_WEIGHTS.KEYWORD_MATCH;
-            console.log('Keyword Matches:', {
-                uniqueKeywords: Array.from(matchedKeywords),
-                totalMatches: keywordCount,
-                paragraphsWithMatches: paragraphsWithKeywords
-            });
+            // console.log('Keyword Matches:', {
+            //     uniqueKeywords: Array.from(matchedKeywords),
+            //     totalMatches: keywordCount,
+            //     paragraphsWithMatches: paragraphsWithKeywords
+            // });
         }
     }
 }
@@ -390,7 +390,7 @@ class ButtonInserter {
     Privacy & Data Usage: How data is collected and used.
     Liabilities & Disclaimers: Key limitations and warranties.
     Dispute Resolution: Methods for resolving conflicts.
-    The summary should have 3 concise bullet points for each section above, using simple language and avoiding legal jargon.`;
+    The summary should have 3 concise bullet points for each section above, using simple language and avoiding legal jargon. Each bullet point must include a short sentence from the text that supports the claim. Place this sentence at the end of the bullet point between square brackets []`;
 
     async sendTermsToServer(content) {
         const GEMINI_API_KEY = 'AIzaSyAFgQsNt9APZ7UKrBikOmap8LEPiY1P9F4'; // FIXME:
@@ -495,6 +495,8 @@ class ButtonInserter {
 
         this.popup.classList.add('active');
         this.showFeedback('success', '✨ Summary Ready');
+
+        addListItemSearchHandlers('.tos-popup-body');
     }
 
     extractTermsContent() {
@@ -565,7 +567,7 @@ class ButtonInserter {
 (function() {
     const detector = new TermsDetector();
     const isTermsPage = detector.detectTermsPage();
-    console.log('Is Terms Page:', isTermsPage);
+    //console.log('Is Terms Page:', isTermsPage);
     
     if (isTermsPage) {
         const inserter = new ButtonInserter();

@@ -4,13 +4,12 @@
   "version": "1.0",
   "description": "Use AI to automatically summarize and understand terms of service.",
   "permissions": [
-    "activeTab",
-    "clipboardWrite"
+    "activeTab"
   ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["showdown.min.js", "content.js"],
+      "js": ["fuzzySearch.js", "listSearchHandler.js", "showdown.min.js", "content.js"],
       "css": ["styles.css"]
     }
   ]

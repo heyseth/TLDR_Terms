@@ -494,7 +494,11 @@ class ButtonInserter {
         }
 
         this.popup.classList.add('active');
-        this.showFeedback('success', '✨ Summary Ready');
+        this.showFeedback('success', 'View Summary');
+        document.getElementsByClassName("tos-copy-button")[0].click = function() {
+            console.log("test");
+            popup.classList.add('active');
+        }
 
         addListItemSearchHandlers('.tos-popup-body');
     }

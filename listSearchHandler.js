@@ -22,10 +22,10 @@ const addListItemSearchHandlers = (parentElement) => {
         // remove the last match from the original text
         li.innerText = li.innerText.replace('[' + hiddenSearch + ']', '').trim();
 
-        // if hiddenSearch is wrapped in quotes, remove them
-        if (hiddenSearch[0] === '"' && hiddenSearch[hiddenSearch.length - 1] === '"') {
-            hiddenSearch = hiddenSearch.slice(1, hiddenSearch.length - 1);
-        }
+        // remove any quotes or “” from the hidden search text
+        hiddenSearch = hiddenSearch.replace(/["“”]/g, '');
+        // replace any ellipses with spaces
+        hiddenSearch = hiddenSearch.replace(/…/g, ' ');
 
         // add a hidden subelement to the li element with the hidden search text
         let hidden = document.createElement('span');

@@ -12,10 +12,15 @@ class ButtonInserter {
         button.textContent = '✨ Understand Terms of Service';
         button.className = 'tos-copy-button tos-fixed-position';
         //button.addEventListener('click', () => this.analyzeTOS());
-        button.addEventListener('click', async function() {
-            chrome.runtime.sendMessage({ action: 'open_side_panel' }).catch(error => {
-                console.error('Failed to send message:', error);
-            });
+        // button.addEventListener('click', async function() {
+        //     chrome.runtime.sendMessage({ action: 'open_side_panel' }).catch(error => {
+        //         console.error('Failed to send message:', error);
+        //     });
+        // });
+        button.addEventListener('click', async () => {
+            const response = await chrome.runtime.sendMessage({greeting: "hello"});
+            // do something with response here, not outside the function
+            console.log(response);
         });
         return button;
     }

@@ -1,10 +1,19 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <title>My Sidepanel</title>
+    <title>Terms of Service Summary</title>
+    <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
-    <h1>All sites sidepanel extension</h1>
-    <p>This side panel is enabled on all sites</p>
+    <div class="tos-sidepanel">
+      <h2>Terms of Service Summary</h2>
+      <p id="disclaimer">
+        This summary is for informational purposes only and is not legal advice.
+        Please read the full Terms of Service for complete details.
+      </p>
+      <button id="summary-button">Show Summary</button>
+      <div id="summary-content"></div>
+    </div>
+    <script src="sidepanel.js"></script>
   </body>
 </html>

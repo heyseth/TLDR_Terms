@@ -106,6 +106,10 @@
     margin: 0;
 }
 
+.tos-popup-content li:hover {
+    background-color: lightgray;
+}
+
 .tos-popup-content b,
 .tos-popup-content strong {
     font-weight: 500;

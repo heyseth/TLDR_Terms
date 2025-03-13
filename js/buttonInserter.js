@@ -11,7 +11,12 @@ class ButtonInserter {
         const button = document.createElement('button');
         button.textContent = '✨ Understand Terms of Service';
         button.className = 'tos-copy-button tos-fixed-position';
-        button.addEventListener('click', () => this.analyzeTOS());
+        //button.addEventListener('click', () => this.analyzeTOS());
+        button.addEventListener('click', async function() {
+            chrome.runtime.sendMessage({ action: 'open_side_panel' }).catch(error => {
+                console.error('Failed to send message:', error);
+            });
+        });
         return button;
     }
 

@@ -4,6 +4,7 @@ chrome.runtime.onMessage.addListener(
             "from a content script:" + sender.tab.url :
             "from the extension");
         if (request.message != "openpanel") {
+            document.getElementById("disclaimer").style.display = "block";
             sendResponse({message: "received content"});
             document.getElementsByClassName("tos-popup-body")[0].innerHTML = request.message;
 

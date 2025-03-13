@@ -11,7 +11,6 @@ class ButtonInserter {
         const button = document.createElement('button');
         button.textContent = '✨ Understand Terms of Service';
         button.className = 'tos-copy-button tos-fixed-position';
-        button.addEventListener('click', () => this.analyzeTOS());
         button.addEventListener('click', async () => {
             await chrome.runtime.sendMessage({type: "openpanel", message: ""});
             // do something with response here, not outside the function
@@ -86,6 +85,12 @@ class ButtonInserter {
     }
 
     async analyzeTOS() {
+        this.button.classList.add('fadeOutRight');
+        // add on animationend event listener to button element
+        this.button.addEventListener('animationend', () => {
+            // remove the button element from the DOM
+            this.button.remove();
+        });
         try {
             const content = this.extractTermsContent();
             this.showFeedback('success', 'Analyzing...');
@@ -210,14 +215,7 @@ class ButtonInserter {
         }
 
         //this.popup.classList.add('active');
-        this.showFeedback('success', 'Success!');
-
-        setTimeout(() => this.button.classList.add('fadeOutRight'), 500);
-        // add on animationend event listener to button element
-        this.button.addEventListener('animationend', () => {
-            // remove the button element from the DOM
-            this.button.remove();
-        });
+        //this.showFeedback('success', 'Success!');
 
         let newContent = document.getElementsByClassName('tos-popup-body')[0];
         this.sendSummary(newContent.innerHTML);

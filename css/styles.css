@@ -50,6 +50,51 @@
     pointer-events: auto;
 }
 
+/* Loading Container and Spinner */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+}
+
+.loading-text {
+    margin-top: 12px;
+    color: var(--spinner-color, #663399);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0%, transparent 25%, var(--spinner-color, #663399) 25%);
+    animation: spin 1s linear infinite;
+    position: relative;
+}
+
+.loading-spinner::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    background-color: var(--spinner-bg, white);
+    border-radius: 50%;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 /* Popup Styles */
 .tos-popup {
     position: fixed;
@@ -178,7 +223,7 @@
       opacity: 0;
       transform: translate3d(100%, 0, 0);
     }
-  }
+}
 
 .fadeOutRight {
     animation-name: fadeOutRight;
@@ -188,7 +233,7 @@
 
 body {
     background-color: white;
-    color: black:
+    color: black;
 }
 
 /* Dark mode styles */
@@ -234,5 +279,14 @@ body {
 
     .tos-popup-initial-content > p {
         color: #ff4444;
+    }
+
+    .loading-spinner {
+        --spinner-color: #8a44cc;
+        --spinner-bg: #181a1b;
+    }
+
+    .loading-text {
+        --spinner-color: #8a44cc;
     }
 }

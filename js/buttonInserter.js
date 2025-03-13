@@ -11,16 +11,11 @@ class ButtonInserter {
         const button = document.createElement('button');
         button.textContent = '✨ Understand Terms of Service';
         button.className = 'tos-copy-button tos-fixed-position';
-        //button.addEventListener('click', () => this.analyzeTOS());
-        // button.addEventListener('click', async function() {
-        //     chrome.runtime.sendMessage({ action: 'open_side_panel' }).catch(error => {
-        //         console.error('Failed to send message:', error);
-        //     });
-        // });
+        button.addEventListener('click', () => this.analyzeTOS());
         button.addEventListener('click', async () => {
-            const response = await chrome.runtime.sendMessage({greeting: "hello"});
+            await chrome.runtime.sendMessage({message: "openpanel"});
             // do something with response here, not outside the function
-            console.log(response);
+            this.analyzeTOS();
         });
         return button;
     }
@@ -178,7 +173,7 @@ class ButtonInserter {
         }
     }
 
-    displaySummary(text) {
+    displaySummary(text) {        
         let formattedText = text;
         // remove all text before the first * symbol
         const startIndex = formattedText.indexOf('\*');
@@ -214,16 +209,23 @@ class ButtonInserter {
             firstUl.remove();
         }
 
-        this.popup.classList.add('active');
-        this.showFeedback('success', 'View Summary');
-        // remove old event listener
-        this.button.removeEventListener('click', this.analyzeTOS);
+        //this.popup.classList.add('active');
+        this.showFeedback('success', 'Success!');
 
-        this.button.addEventListener('click', () => {
-            this.popup.classList.add('active');
+        setTimeout(() => this.button.classList.add('fadeOutRight'), 500);
+        // add on animationend event listener to button element
+        this.button.addEventListener('animationend', () => {
+            // remove the button element from the DOM
+            this.button.remove();
         });
 
-        addListItemSearchHandlers('.tos-popup-body');
+        let newContent = document.getElementsByClassName('tos-popup-body')[0];
+        this.sendSummary(newContent.innerHTML);
+        //addListItemSearchHandlers('.tos-popup-body');
+    }
+
+    async sendSummary(text) {
+        const response = await chrome.runtime.sendMessage({message: text});
     }
 
     extractTermsContent() {

@@ -117,10 +117,10 @@ class TermsDetector {
         //     header: `${this.scores.header} (${this.scores.header ? 'Match' : 'No match'})`,
         //     content: `${this.scores.content} (${this.scores.content ? 'Match' : 'No match'})`,
         //     keyword: `${this.scores.keyword} (${this.scores.keyword ? 'Match' : 'No match'})`,
-        //     total: `${this.score.toFixed(2)} (Threshold: 0.4)`
+        //     total: `${this.score.toFixed(2)} (Threshold: 0.2)`
         // });
 
-        return this.score >= 0.4;
+        return this.score >= 0.2;
     }
 
     isSearchResultsPage() {

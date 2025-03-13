@@ -185,3 +185,54 @@
     animation-duration: 0.5s;
     animation-fill-mode: forwards;
 }
+
+body {
+    background-color: white;
+    color: black:
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #181a1b;
+        color: #e0ddd9;
+    }
+
+    .tos-copy-button {
+        background-color: #8a44cc;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .tos-copy-button:hover {
+        background-color: #6d35a0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .tos-popup-body {
+        color: #e1e1e1;
+    }
+
+    .tos-popup-body li:hover {
+        background-color: #3a3a3a;
+    }
+
+    .tos-popup-close {
+        color: #a0a0a0;
+    }
+
+    .tos-popup-close:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .tos-popup h2 {
+        color: #e1e1e1;
+    }
+
+    .tos-popup-initial-content {
+        border-color: #ff4444;
+    }
+
+    .tos-popup-initial-content > p {
+        color: #ff4444;
+    }
+}

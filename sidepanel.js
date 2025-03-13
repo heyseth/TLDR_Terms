@@ -47,17 +47,10 @@ const addListItemSearchHandlers = (parentElement) => {
         hidden.innerText = hiddenSearch;
         li.appendChild(hidden);
 
-        li.addEventListener('click', () => {
-            console.log("testing");
-
-            // set searchText to the text from the hidden sub element
-            let searchText = li.querySelector('span').innerText;
-
-            if (typeof fuzzyHighlight === 'function') {
-                fuzzyHighlight(searchText);
-            } else {
-                console.error('fuzzyHighlight function not found');
-            }
+        li.addEventListener('click', async () => {
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+                chrome.tabs.sendMessage(tabs[0].id, {type: "search", message: li.querySelector('span').innerText}, function(response) {});  
+            });
         });
     });
 };

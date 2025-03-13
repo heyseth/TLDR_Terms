@@ -13,7 +13,7 @@ class ButtonInserter {
         button.className = 'tos-copy-button tos-fixed-position';
         button.addEventListener('click', () => this.analyzeTOS());
         button.addEventListener('click', async () => {
-            await chrome.runtime.sendMessage({message: "openpanel"});
+            await chrome.runtime.sendMessage({type: "openpanel", message: ""});
             // do something with response here, not outside the function
             this.analyzeTOS();
         });
@@ -225,7 +225,7 @@ class ButtonInserter {
     }
 
     async sendSummary(text) {
-        const response = await chrome.runtime.sendMessage({message: text});
+        const response = await chrome.runtime.sendMessage({type: "main", message: text});
     }
 
     extractTermsContent() {

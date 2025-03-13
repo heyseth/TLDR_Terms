@@ -33,7 +33,7 @@ window.fuzzysort = {
 
 // Fuzzy search and highlight functionality using fuzzysort
 window.fuzzyHighlight = (searchText) => {
-    console.log(searchText);
+    //console.log(searchText);
     // Remove any existing highlights
     const existingHighlights = document.querySelectorAll('.fuzzy-highlight');
     existingHighlights.forEach(highlight => {

@@ -13,6 +13,17 @@
 //     return tab;
 //   }
 
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type = "search") {
+        if (typeof fuzzyHighlight === 'function') {
+            fuzzyHighlight(message.message);
+        } else {
+            console.error('fuzzyHighlight function not found');
+        }
+    }
+    return true
+});
+
 // Main execution
 (function() {
     const detector = new TermsDetector();

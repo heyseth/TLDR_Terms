@@ -25,7 +25,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["./js/fuzzySearch.js", "./js/listSearchHandler.js", "./js/showdown.min.js", "./js/termsDetector.js", "./js/buttonInserter.js", "./js/main.js"],
+      "js": ["./js/server.js", "./js/fuzzySearch.js", "./js/listSearchHandler.js", "./js/showdown.min.js", "./js/termsDetector.js", "./js/buttonInserter.js", "./js/main.js"],
       "css": ["./css/styles.css"]
     }
   ],

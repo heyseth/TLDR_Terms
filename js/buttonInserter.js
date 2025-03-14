@@ -114,39 +114,51 @@ class ButtonInserter {
     The summary should have 3 concise bullet points for each section above, using simple language and avoiding legal jargon. Each bullet point must end with a short sentence from the text that supports the claim. This sentence MUST match the text exactly. Put the sentence between square brackets []`;
 
     async sendTermsToServer(prompt) {
-        const url = 'http://localhost:5000/api'
+        //const url = 'http://localhost:5000/api'
+        const urlsToTry = [
+            "https://3.17.81.212:5000/api",
+            "https://3.17.81.212:5000",
+            "https://3.17.81.212/api",
+            "https://3.17.81.212",
+            "https://ec2-3-17-81-212.us-east-2.compute.amazonaws.com:5000/api",
+            "https://ec2-3-17-81-212.us-east-2.compute.amazonaws.com:5000",
+            "https://ec2-3-17-81-212.us-east-2.compute.amazonaws.com/api",
+            "https://ec2-3-17-81-212.us-east-2.compute.amazonaws.com"
+        ]
       
-        try {
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: this.metaprompt + prompt
+        for (const url of urlsToTry) {
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: this.metaprompt + prompt
+                            }]
                         }]
-                    }]
+                    })
                 })
-            })
 
-            const data = await res.json()
+                const data = await res.json()
 
-            if (!res.ok) {
-                alert('Error: ' + (data.error || 'Failed to get response'))
-                return
+                if (!res.ok) {
+                    console.log('Error: ' + (data.error || 'Failed to get response'))
+                    return
+                }
+
+                const response = data.candidates?.[0]?.content?.parts?.[0]?.text
+                if (!response) {
+                    console.log('Invalid response format')
+                    return
+                }
+
+                this.displaySummary(response);
+            } catch (err) {
+                console.log('Error: ' + err.message)
             }
-
-            const response = data.candidates?.[0]?.content?.parts?.[0]?.text
-            if (!response) {
-                alert('Invalid response format')
-                return
-            }
-
-            this.displaySummary(response);
-        } catch (err) {
-            alert('Error: ' + err.message)
         }
     }
 

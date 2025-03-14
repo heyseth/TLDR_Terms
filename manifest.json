@@ -28,5 +28,8 @@
       "js": ["./js/fuzzySearch.js", "./js/listSearchHandler.js", "./js/showdown.min.js", "./js/termsDetector.js", "./js/buttonInserter.js", "./js/main.js"],
       "css": ["./css/styles.css"]
     }
-  ]
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; connect-src 'self' https://ec2-3-17-81-212.us-east-2.compute.amazonaws.com:5000; object-src 'self'"
+  }
 }

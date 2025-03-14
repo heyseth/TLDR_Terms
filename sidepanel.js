@@ -1,11 +1,8 @@
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-        console.log(sender.tab ?
-            "from a content script:" + sender.tab.url :
-            "from the extension");
-        if (request.message != "openpanel") {
+        if (request.type == "main") {
             document.getElementById("disclaimer").style.display = "block";
-            sendResponse({message: "received content"});
+            // sendResponse({message: "received content"});
             document.getElementsByClassName("tos-popup-body")[0].innerHTML = request.message;
 
             addListItemSearchHandlers('.tos-popup-body');

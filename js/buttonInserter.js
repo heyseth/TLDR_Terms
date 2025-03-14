@@ -14,6 +14,7 @@ class ButtonInserter {
         button.textContent = '✨ Understand Terms of Service';
         button.className = 'tos-copy-button tos-fixed-position';
         button.addEventListener('click', async () => {
+            // open the side panel
             await chrome.runtime.sendMessage({type: "openpanel", message: ""});
             // do something with response here, not outside the function
             this.analyzeTOS();
@@ -96,10 +97,7 @@ class ButtonInserter {
         try {
             const content = this.extractTermsContent();
             this.showFeedback('success', 'Analyzing...');
-            const response = await this.server.sendTermsToServer(content);
-            if (response) {
-                this.displaySummary(response);
-            }
+            const response = await chrome.runtime.sendMessage({type: "server", message: content});
         } catch (error) {
             console.error('Failed to copy:', error);
             this.showFeedback('error', 'Failed to analyze');
@@ -145,8 +143,7 @@ class ButtonInserter {
         //this.popup.classList.add('active');
         //this.showFeedback('success', 'Success!');
 
-        let newContent = document.getElementsByClassName('tos-popup-body')[0];
-        this.sendSummary(newContent.innerHTML);
+        this.sendSummary(popupBody.innerHTML);
         //addListItemSearchHandlers('.tos-popup-body');
     }
 

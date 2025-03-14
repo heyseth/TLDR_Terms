@@ -13,15 +13,11 @@ class Server {
   async sendTermsToServer(prompt) {
 
     const urlsToTry = [
-         "http://localhost:5000/api"
-    //   "https://3.17.81.212:5000/api",
-    //   "https://3.17.81.212:5000",
-    //   "https://3.17.81.212/api",
-    //   "https://3.17.81.212",
-    //   "https://ec2-3-17-81-212.us-east-2.compute.amazonaws.com:5000/api",
-    //   "https://ec2-3-17-81-212.us-east-2.compute.amazonaws.com:5000",
-    //   "https://ec2-3-17-81-212.us-east-2.compute.amazonaws.com/api",
-    //   "https://ec2-3-17-81-212.us-east-2.compute.amazonaws.com",
+      //"http://localhost:5000/api",
+      "http://3.17.81.212:5000/api",
+      "http://ec2-3-17-81-212.us-east-2.compute.amazonaws.com:5000/api",
+      "https://3.17.81.212:5000/api",
+      "https://ec2-3-17-81-212.us-east-2.compute.amazonaws.com:5000/api"
     ];
 
     for (const url of urlsToTry) {
@@ -64,6 +60,3 @@ class Server {
     }
   }
 }
-
-// Make Server globally available
-window.Server = Server;

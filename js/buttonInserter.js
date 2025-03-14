@@ -113,12 +113,11 @@ class ButtonInserter {
     Dispute Resolution: Methods for resolving conflicts.
     The summary should have 3 concise bullet points for each section above, using simple language and avoiding legal jargon. Each bullet point must end with a short sentence from the text that supports the claim. This sentence MUST match the text exactly. Put the sentence between square brackets []`;
 
-    async sendTermsToServer(content) {
-        const GEMINI_API_KEY = 'AIzaSyBvGvFV3BqFUutQSTayLDpqmy9Bf-MHhWE'; // FIXME:
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-        
+    async sendTermsToServer(prompt) {
+        const url = 'http://localhost:5000/api'
+      
         try {
-            const response = await fetch(endpoint, {
+            const res = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -126,55 +125,28 @@ class ButtonInserter {
                 body: JSON.stringify({
                     contents: [{
                         parts: [{
-                            text: this.metaprompt + content
+                            text: this.metaprompt + prompt
                         }]
                     }]
                 })
-            });
+            })
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await res.json()
+
+            if (!res.ok) {
+                alert('Error: ' + (data.error || 'Failed to get response'))
+                return
             }
 
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let buffer = '';
-
-            while (true) {
-                const {value, done} = await reader.read();
-                if (done) break;
-                
-                buffer += decoder.decode(value, {stream: true});
-                
-                let curlyBraceCount = 0;
-                let startIndex = 0;
-                
-                for (let i = 0; i < buffer.length; i++) {
-                    if (buffer[i] === '{') curlyBraceCount++;
-                    if (buffer[i] === '}') curlyBraceCount--;
-                    
-                    if (curlyBraceCount === 0 && startIndex < i) {
-                        try {
-                            const jsonStr = buffer.substring(startIndex, i + 1);
-                            const data = JSON.parse(jsonStr);
-                            
-                            if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
-                                const summaryText = data.candidates[0].content.parts[0].text;
-                                this.displaySummary(summaryText);
-                            }
-                            
-                            buffer = buffer.substring(i + 1);
-                            startIndex = 0;
-                            i = 0;
-                        } catch (e) {
-                            continue;
-                        }
-                    }
-                }
+            const response = data.candidates?.[0]?.content?.parts?.[0]?.text
+            if (!response) {
+                alert('Invalid response format')
+                return
             }
-        } catch (error) {
-            console.error('Failed to send to server:', error);
-            throw error;
+
+            this.displaySummary(response);
+        } catch (err) {
+            alert('Error: ' + err.message)
         }
     }
 

@@ -44,7 +44,7 @@ class Server {
 async sendTermsToServer(prompt) {
 
   const urlsToTry = [
-    "https://ec2-3-17-81-212.us-east-2.compute.amazonaws.com:5000/api"
+    "http://ec2-3-17-81-212.us-east-2.compute.amazonaws.com:5000/api"
   ];
 
   for (const url of urlsToTry) {

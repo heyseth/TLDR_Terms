@@ -4,7 +4,7 @@
   "version": "1.0",
   "description": "Use AI to automatically summarize and understand terms of service.",
   "icons": {
-    "128": "icons/icon.png"
+    "128": "icons/icon-default.png"
   },
   "permissions": [
     "activeTab",
@@ -18,7 +18,7 @@
   ],
   "action": {
     "default_icon": {
-      "128": "icons/icon.png"
+      "128": "icons/icon-default.png"
     }
   },
   "web_accessible_resources": [{

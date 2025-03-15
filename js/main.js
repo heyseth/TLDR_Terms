@@ -28,7 +28,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 })();
 
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', async e => {
-    const iconVariant = e.matches ? "-white" : "";
-    await chrome.runtime.sendMessage({type: "updateicon", message: iconVariant});
-});
+// window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', async e => {
+//     const iconVariant = e.matches ? "-white" : "";
+//     await chrome.runtime.sendMessage({type: "updateicon", message: iconVariant});
+// });

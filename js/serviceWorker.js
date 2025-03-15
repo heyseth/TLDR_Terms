@@ -18,12 +18,13 @@ chrome.runtime.onMessage.addListener(
         path: 'sidepanel.html',
         enabled: true
       });
-    } else if (request.type === "updateicon") {
-      const iconPath = request.message === "-white" ? "icon-white.png" : "icon.png";
-      chrome.action.setIcon({
-        path: '/icons/' + iconPath
-      });
     }
+    // else if (request.type === "updateicon") {
+    //   const iconPath = request.message === "-white" ? "icon-white.png" : "icon.png";
+    //   chrome.action.setIcon({
+    //     path: '/icons/' + iconPath
+    //   });
+    // }
     return true; // Required to use sendResponse asynchronously
   }
 );

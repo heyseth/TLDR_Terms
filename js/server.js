@@ -13,10 +13,6 @@ class Server {
   async sendTermsToServer(prompt) {
 
     const urlsToTry = [
-      //"http://localhost:5000/api",
-      "http://3.17.81.212:5000/api",
-      "http://ec2-3-17-81-212.us-east-2.compute.amazonaws.com:5000/api",
-      "https://3.17.81.212:5000/api",
       "https://ec2-3-17-81-212.us-east-2.compute.amazonaws.com:5000/api"
     ];
 

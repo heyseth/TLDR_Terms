@@ -7,24 +7,14 @@
     "128": "icons/icon-default.png"
   },
   "permissions": [
-    "activeTab",
     "sidePanel",
-    "scripting",
-    "tabs",
-    "storage"
-  ],
-  "host_permissions": [
-    "<all_urls>"
+    "tabs"
   ],
   "action": {
     "default_icon": {
       "128": "icons/icon-default.png"
     }
   },
-  "web_accessible_resources": [{
-    "resources": ["icons/*.png"],
-    "matches": ["<all_urls>"]
-  }],
   "background": {
     "service_worker": "./js/serviceWorker.js"
   },
@@ -33,7 +23,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["http://*/*", "https://*/*"],
       "js": ["./js/server.js", "./js/fuzzySearch.js", "./js/listSearchHandler.js", "./js/showdown.min.js", "./js/termsDetector.js", "./js/buttonInserter.js", "./js/main.js"],
       "css": ["./css/styles.css"]
     }

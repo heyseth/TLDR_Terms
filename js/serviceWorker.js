@@ -2,6 +2,9 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
 });
 
+// Store HTML content per tab
+const tabContent = new Map();
+
 chrome.runtime.onMessage.addListener(
   async function(request, sender, sendResponse) {
 
@@ -9,8 +12,14 @@ chrome.runtime.onMessage.addListener(
       const server = new Server();
       const result = await server.sendTermsToServer(request.message);
       
+      // Don't store the result yet - let ButtonInserter process it first
       chrome.tabs.sendMessage(sender.tab.id, {type: "result", message: result }, () => {});
 
+    } else if (request.type === "main") {
+      // Store the processed HTML content for this tab
+      if (sender.tab && sender.tab.id) {
+        tabContent.set(sender.tab.id, request.message);
+      }
     } else if (request.type === "openpanel") {
       await chrome.sidePanel.open({ tabId: sender.tab.id });
       await chrome.sidePanel.setOptions({
@@ -18,16 +27,20 @@ chrome.runtime.onMessage.addListener(
         path: 'sidepanel.html',
         enabled: true
       });
+    } else if (request.type === "getTabContent") {
+      // Return stored HTML content for the tab
+      const content = tabContent.get(request.tabId) || '';
+      sendResponse({content});
+      return true;
     }
-    // else if (request.type === "updateicon") {
-    //   const iconPath = request.message === "-white" ? "icon-white.png" : "icon.png";
-    //   chrome.action.setIcon({
-    //     path: '/icons/' + iconPath
-    //   });
-    // }
     return true; // Required to use sendResponse asynchronously
   }
 );
+
+// Clean up stored content when a tab is closed
+chrome.tabs.onRemoved.addListener((tabId) => {
+  tabContent.delete(tabId);
+});
 
 class Server {
   metaprompt = 

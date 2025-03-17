@@ -14,6 +14,16 @@ class ButtonInserter {
         button.textContent = '✨ Understand Terms of Service';
         button.className = 'tos-copy-button tos-fixed-position';
         button.addEventListener('click', async () => {
+            // Send loading state first
+            await chrome.runtime.sendMessage({
+                type: "main",
+                message: `
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-text">Analyzing...</div>
+                    </div>
+                `
+            });
             // open the side panel
             await chrome.runtime.sendMessage({type: "openpanel", message: ""});
             // do something with response here, not outside the function
@@ -116,6 +126,7 @@ class ButtonInserter {
         // replace all * in formattedText with &#x2022;
         formattedText = formattedText.replace(/\* /g, '');
 
+        const disclaimer = '<p id="disclaimer"> This summary is for informational purposes only and is not legal advice. Please read the full Terms of Service for complete details.</p><br>';
         const popupBody = this.popup.querySelector('.tos-popup-body');
         popupBody.innerHTML = formattedText;
 
@@ -142,6 +153,7 @@ class ButtonInserter {
 
         //this.popup.classList.add('active');
         //this.showFeedback('success', 'Success!');
+        popupBody.innerHTML = disclaimer + popupBody.innerHTML;
 
         this.sendSummary(popupBody.innerHTML);
         //addListItemSearchHandlers('.tos-popup-body');

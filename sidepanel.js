@@ -6,7 +6,6 @@ chrome.tabs.query({active: true, currentWindow: true}, async function(tabs) {
             tabId: tabs[0].id
         });
         if (response && response.content) {
-            document.getElementById("disclaimer").style.display = "block";
             // Content is already HTML, so use it directly
             document.getElementsByClassName("tos-popup-body")[0].innerHTML = response.content;
             addListItemSearchHandlers('.tos-popup-body');
@@ -17,7 +16,6 @@ chrome.tabs.query({active: true, currentWindow: true}, async function(tabs) {
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         if (request.type == "main") {
-            document.getElementById("disclaimer").style.display = "block";
             // Content is already HTML, so use it directly
             document.getElementsByClassName("tos-popup-body")[0].innerHTML = request.message;
             addListItemSearchHandlers('.tos-popup-body');

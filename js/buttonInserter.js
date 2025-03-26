@@ -5,8 +5,6 @@ class ButtonInserter {
         this.button = this.createButton();
         this.popup = this.createPopup();
         this.inserted = false;
-        // Use the globally available Server class
-        this.server = new Server();
     }
 
     createButton() {

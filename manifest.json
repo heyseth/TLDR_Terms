@@ -23,7 +23,7 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["./js/server.js", "./js/fuzzySearch.js", "./js/listSearchHandler.js", "./js/showdown.min.js", "./js/termsDetector.js", "./js/buttonInserter.js", "./js/main.js"],
+      "js": ["./js/fuzzySearch.js", "./js/listSearchHandler.js", "./js/showdown.min.js", "./js/termsDetector.js", "./js/buttonInserter.js", "./js/main.js"],
       "css": ["./css/styles.css"]
     }
   ],

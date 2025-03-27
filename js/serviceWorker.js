@@ -56,7 +56,10 @@ class Server {
 
 async sendTermsToServer(prompt) {
 
+  let key = await this.generateKey(prompt);
+
   const urlsToTry = [
+    //"http://localhost:5000/api"
     "http://ec2-3-17-81-212.us-east-2.compute.amazonaws.com:5000/api"
   ];
 
@@ -73,6 +76,7 @@ async sendTermsToServer(prompt) {
               parts: [
                 {
                   text: this.metaprompt + prompt,
+                  key: key,
                 },
               ],
             },
@@ -99,4 +103,22 @@ async sendTermsToServer(prompt) {
     }
   }
 }
+
+async generateKey(text) {
+  // Normalize the text (trim whitespace, standardize line endings, etc.)
+  const normalizedText = text.trim().replace(/\r\n/g, '\n');
+
+  // Encode the text as a Uint8Array
+  const encoder = new TextEncoder();
+  const data = encoder.encode(normalizedText);
+
+  // Generate a SHA-256 hash
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+  // Convert bytes to hex string
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
+
 }

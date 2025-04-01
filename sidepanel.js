@@ -1,7 +1,7 @@
 // Request tab-specific content when sidepanel loads
-chrome.tabs.query({active: true, currentWindow: true}, async function(tabs) {
+browser.tabs.query({active: true, currentWindow: true}, async function(tabs) {
     if (tabs[0]) {
-        const response = await chrome.runtime.sendMessage({
+        const response = await browser.runtime.sendMessage({
             type: "getTabContent",
             tabId: tabs[0].id
         });
@@ -13,7 +13,7 @@ chrome.tabs.query({active: true, currentWindow: true}, async function(tabs) {
     }
 });
 
-chrome.runtime.onMessage.addListener(
+browser.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         if (request.type == "main") {
             // Content is already HTML, so use it directly
@@ -61,8 +61,8 @@ const addListItemSearchHandlers = (parentElement) => {
         li.appendChild(hidden);
 
         li.addEventListener('click', async () => {
-            chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-                chrome.tabs.sendMessage(tabs[0].id, {type: "search", message: li.querySelector('span').innerText}, function(response) {});  
+            browser.tabs.query({active: true, currentWindow: true}, function(tabs){
+                browser.tabs.sendMessage(tabs[0].id, {type: "search", message: li.querySelector('span').innerText}, function(response) {});
             });
         });
     });

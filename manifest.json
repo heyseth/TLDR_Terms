@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TLDR Terms",
-  "version": "1.1",
+  "version": "1.0",
   "description": "Use AI to automatically summarize and understand terms of service.",
   "icons": {
     "128": "icons/icon-default.png"
@@ -15,8 +15,7 @@
     }
   },
   "background": {
-    "scripts": ["./js/lib/browser-polyfill.js", "./js/serviceWorker.js"],
-    "type": "module"
+    "service_worker": "./js/serviceWorker.js"
   },
   "side_panel": {
     "default_path": "sidepanel.html"
@@ -24,17 +23,11 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["./js/lib/browser-polyfill.js", "./js/fuzzySearch.js", "./js/listSearchHandler.js", "./js/showdown.min.js", "./js/termsDetector.js", "./js/buttonInserter.js", "./js/main.js"],
+      "js": ["./js/fuzzySearch.js", "./js/listSearchHandler.js", "./js/showdown.min.js", "./js/termsDetector.js", "./js/buttonInserter.js", "./js/main.js"],
       "css": ["./css/styles.css"]
     }
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; connect-src 'self' http://ec2-3-17-81-212.us-east-2.compute.amazonaws.com:5000 http://3.17.81.212:5000; object-src 'self'"
-  },
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "tldr-terms@example.com",
-      "strict_min_version": "109.0"
-    }
+    "extension_pages": "script-src 'self'; connect-src 'self' http://ec2-3-17-81-212.us-east-2.compute.amazonaws.com:5000 http://3.17.81.212:5000 http://localhost:5000; object-src 'self'"
   }
 }

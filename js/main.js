@@ -1,4 +1,4 @@
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type == "search") {
         if (typeof fuzzyHighlight === 'function') {
             fuzzyHighlight(message.message);
@@ -30,5 +30,5 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', async e => {
 //     const iconVariant = e.matches ? "-white" : "";
-//     await browser.runtime.sendMessage({type: "updateicon", message: iconVariant});
+//     await chrome.runtime.sendMessage({type: "updateicon", message: iconVariant});
 // });

@@ -13,7 +13,7 @@ class ButtonInserter {
         button.className = 'tos-copy-button tos-fixed-position';
         button.addEventListener('click', async () => {
             // Send loading state first
-            await browser.runtime.sendMessage({
+            await chrome.runtime.sendMessage({
                 type: "main",
                 message: `
                     <div class="loading-container">
@@ -23,7 +23,7 @@ class ButtonInserter {
                 `
             });
             // open the side panel
-            await browser.runtime.sendMessage({type: "openpanel", message: ""});
+            await chrome.runtime.sendMessage({type: "openpanel", message: ""});
             // do something with response here, not outside the function
             this.analyzeTOS();
         });
@@ -105,7 +105,7 @@ class ButtonInserter {
         try {
             const content = this.extractTermsContent();
             this.showFeedback('success', 'Analyzing...');
-            const response = await browser.runtime.sendMessage({type: "server", message: content});
+            const response = await chrome.runtime.sendMessage({type: "server", message: content});
         } catch (error) {
             console.error('Failed to copy:', error);
             this.showFeedback('error', 'Failed to analyze');
@@ -158,7 +158,7 @@ class ButtonInserter {
     }
 
     async sendSummary(text) {
-        const response = await browser.runtime.sendMessage({type: "main", message: text});
+        const response = await chrome.runtime.sendMessage({type: "main", message: text});
     }
 
     extractTermsContent() {

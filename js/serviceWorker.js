@@ -1,11 +1,13 @@
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
+// Check if we're running in a browser that supports sidePanel
+browser.runtime.onInstalled.addListener(() => {
+  if (browser.sidePanel) {
+    browser.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
+  }
 });
 
 // Store HTML content per tab
 const tabContent = new Map();
-
-chrome.runtime.onMessage.addListener(
+browser.runtime.onMessage.addListener(
   async function(request, sender, sendResponse) {
 
     if (request.type === "server") {
@@ -13,7 +15,7 @@ chrome.runtime.onMessage.addListener(
       const result = await server.sendTermsToServer(request.message);
       
       // Don't store the result yet - let ButtonInserter process it first
-      chrome.tabs.sendMessage(sender.tab.id, {type: "result", message: result }, () => {});
+      browser.tabs.sendMessage(sender.tab.id, {type: "result", message: result }, () => {});
 
     } else if (request.type === "main") {
       // Store the processed HTML content for this tab
@@ -21,12 +23,23 @@ chrome.runtime.onMessage.addListener(
         tabContent.set(sender.tab.id, request.message);
       }
     } else if (request.type === "openpanel") {
-      await chrome.sidePanel.open({ tabId: sender.tab.id });
-      await chrome.sidePanel.setOptions({
-        tabId: sender.tab.id,
-        path: 'sidepanel.html',
-        enabled: true
-      });
+      // Check if sidePanel API is available (Chrome)
+      if (browser.sidePanel) {
+        await browser.sidePanel.open({ tabId: sender.tab.id });
+        await browser.sidePanel.setOptions({
+          tabId: sender.tab.id,
+          path: 'sidepanel.html',
+          enabled: true
+        });
+      } else {
+        // Firefox fallback - open in a new tab or popup
+        browser.windows.create({
+          url: 'sidepanel.html',
+          type: 'popup',
+          width: 400,
+          height: 600
+        });
+      }
     } else if (request.type === "getTabContent") {
       // Return stored HTML content for the tab
       const content = tabContent.get(request.tabId) || '';
@@ -38,7 +51,7 @@ chrome.runtime.onMessage.addListener(
 );
 
 // Clean up stored content when a tab is closed
-chrome.tabs.onRemoved.addListener((tabId) => {
+browser.tabs.onRemoved.addListener((tabId) => {
   tabContent.delete(tabId);
 });
 
